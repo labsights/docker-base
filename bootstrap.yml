@@ -1,0 +1,45 @@
+- name: Boostrap the base docker image
+  hosts: localhost
+  tasks:
+    - name: Add git ppa
+      apt_repository: repo='ppa:git-core/ppa'
+
+    - name: Install common required packages
+      apt: name={{ item }} state=latest force=yes
+      with_items:
+        - mc
+        - make
+        - gcc
+        - wget
+        - curl
+        - zsh
+        - htop
+        - tar
+        - python-setuptools
+        - git
+        - git-core
+
+    - name: Install Python PIP
+      shell: curl -sL https://bootstrap.pypa.io/get-pip.py | python -
+
+    - name: Enable colors in git
+      shell: git config --global color.ui auto
+
+    - name: get home dir for root
+      shell: eval echo ~root
+      register: user_homedir
+
+    - name: Install Oh My ZSH from source
+      git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest={{ user_homedir.stdout }}/.oh-my-zsh
+
+    - name: deploy .zshrc
+      template: src=zsh.rc dest={{ user_homedir.stdout }}/.zshrc owner=root
+
+    - name: Set zsh as default shell
+      user: name=root shell=/bin/zsh
+
+    - name: Install NodeJS ppa
+      shell: curl -sL https://deb.nodesource.com/setup | bash -
+
+    - name: Install NodeJS
+      apt: name=nodejs state=latest update_cache=yes
