@@ -13,5 +13,3 @@ ADD bootstrap.yml /tmp/bootstrap.yml
 ADD zsh.rc /tmp/zsh.rc
 RUN ansible-playbook /tmp/bootstrap.yml
 RUN rm /tmp/bootstrap.yml;rm /tmp/zsh.rc;
-
-ENTRYPOINT zsh
