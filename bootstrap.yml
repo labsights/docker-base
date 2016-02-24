@@ -2,11 +2,7 @@
   hosts: localhost
   tasks:
     - name: Add required repos
-      apt_repository: repo='{{ item }}'
-      with_items:
-        - ppa:ondrej/php5
-        - ppa:nginx/stable
-        - ppa:git-core/ppa
+      apt_repository: repo='ppa:git-core/ppa'
 
     - name: Install common required packages
       apt: name={{ item }} state=latest force=yes
@@ -16,50 +12,16 @@
         - gcc
         - wget
         - curl
-        - zsh
-        - htop
         - tar
         - python-setuptools
         - git
         - git-core
-        - php5
-        - php5-cli
-        - php5-curl
-        - php5-mysql
-        - php5-gd
-        - php5-intl
-        - php5-imagick
-        - php5-imap
-        - php5-mcrypt
-        - php5-memcache
-        - php5-ps
-        - php5-pspell
-        - php5-recode
-        - php5-sqlite
-        - php5-tidy
-        - php5-xmlrpc
-        - php5-xsl
-        - php5-xcache
-        - php-pear
-        - php5-fpm
-        - php5-gearman
-        - nginx
-        - mysql-client
 
     - name: Install Python PIP
       shell: curl -sL https://bootstrap.pypa.io/get-pip.py | python -
 
     - name: Enable colors in git
       shell: git config --global color.ui auto
-
-    - name: Download and install composer
-      shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
-
-    - name: Setup global binary for composer
-      shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
-
-    - name: Add execute permissions for composer
-      shell: chmod a+x /usr/local/bin/composer
 
     - name: Install gosu
       shell: curl -o /usr/local/bin/gosu -fsSL "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)"
@@ -81,21 +43,3 @@
 
     - name: Add main supervisor config
       template: src=templates/supervisor.conf dest=/etc/supervisor/supervisord.conf
-
-    - name: Add nginx configuration
-      template: src=templates/nginx.conf dest=/etc/nginx/nginx.conf
-
-    - name: Add php5-fpm configuration
-      template: src=templates/php-fpm.conf dest=/etc/php5/fpm/php-fpm.conf
-
-    - name: add nginx supervisor config
-      template: src=templates/supervisor-nginx.conf dest=/etc/supervisor/conf.d/nginx.conf
-
-    - name: add php5-fpm supervisor config
-      template: src=templates/supervisor-fpm.conf dest=/etc/supervisor/conf.d/php5-fpm.conf
-
-    - name: Install NodeJS ppa
-      shell: curl -sL https://deb.nodesource.com/setup | bash -
-
-    - name: Install NodeJS
-      apt: name=nodejs state=latest update_cache=yes

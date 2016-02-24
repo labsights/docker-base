@@ -14,4 +14,6 @@ ADD templates /tmp/templates
 
 RUN ansible-playbook /tmp/bootstrap.yml
 
-EXPOSE 80
+#------------------------- cleanup -----------------------------
+RUN rm -rf /tmp/bootstrap.yml;rm -rf /tmp/templates;
+RUN apt-get autoremove -y;apt-get autoclean -y;apt-get clean -y;
